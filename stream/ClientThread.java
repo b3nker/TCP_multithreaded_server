@@ -36,7 +36,7 @@ public class ClientThread extends Thread {
                 String line = socIn.readLine();
                 socOut.println(line);
                 if (!line.isEmpty()) {
-                    EchoServerMultiThreaded.sendMessageToAll(line, this.pseudo);
+                    EchoServerMultiThreaded.sendMessageToAll(pseudo + " said : " + line, pseudo);
                 }
             }
         } catch (Exception e) {

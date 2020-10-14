@@ -7,7 +7,7 @@
 
 package stream;
 
-import java.io.PrintStream;
+import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +30,8 @@ public class EchoServerMultiThreaded  {
             System.out.println("Usage: java EchoServer <EchoServer port>");
             System.exit(1);
         }
+        
+        getStoredMessages();
         try {
             listenSocket = new ServerSocket(Integer.parseInt(args[0])); //port
             System.out.println("Server ready...");
@@ -39,6 +41,7 @@ public class EchoServerMultiThreaded  {
                 nbClient ++;
                 ClientThread ct = new ClientThread(clientSocket,"Client " + nbClient);
                 EchoServerMultiThreaded.addServiceClientSocket(clientSocket);
+                recoverMessages(clientSocket);
 
                 ct.start();
             }
@@ -55,19 +58,54 @@ public class EchoServerMultiThreaded  {
      * @param message
      */
     synchronized public static void sendMessageToAll(String message, String pseudo) {
+        messages.add(message);
+        storeMessage(message);
         for (Socket s: outputServiceClientSockets) {
             try {
                 PrintStream out = new PrintStream(s.getOutputStream());
-                out.println(pseudo + " said : " + message);
-                System.out.println("Output : " + out);
-                System.out.println(pseudo + " said : " + message);
-            }catch(Exception e){
+                out.println(message);
+                System.out.println(message);
+            } catch(Exception e){
                 e.printStackTrace();
             }
-            ;
+        }
+        System.out.println("messages has size: " + messages.size());
+    }
+
+    synchronized private static void recoverMessages(Socket s) {
+        for (String message: messages) {
+            PrintStream out = null;
+            try {
+                out = new PrintStream(s.getOutputStream());
+                out.println(message);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
+    private static void getStoredMessages() {
+        try (BufferedReader br = new BufferedReader(new FileReader(".storage"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                messages.add(line);
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void storeMessage(String message) {
+        FileWriter fw;
+        try {
+            fw = new FileWriter(".storage", true);
+            fw.write(message + "\n");
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     /** Insert in a collection, new service client thread output stream
      *
      * @param out, service client thread output stream
