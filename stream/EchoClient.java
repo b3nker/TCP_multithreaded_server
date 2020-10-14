@@ -19,6 +19,7 @@ public class EchoClient {
     public static void main(String[] args) throws IOException {
 
         Socket echoSocket = null;
+        ReadThread rt = null;
         PrintStream socOut = null;
         BufferedReader stdIn = null;
         BufferedReader socIn = null;
@@ -31,33 +32,41 @@ public class EchoClient {
         try {
             // creation socket ==> connexion
             echoSocket = new Socket(args[0], new Integer(args[1]).intValue());
-            socIn = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
+            rt = new ReadThread(echoSocket);
             socOut = new PrintStream(echoSocket.getOutputStream());
             stdIn = new BufferedReader(new InputStreamReader(System.in));
-
-            ReadThread readThread = new ReadThread(echoSocket);
-            readThread.start();
+            rt.start();
 
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host:" + args[0]);
+            e.printStackTrace();
             System.exit(1);
         } catch (IOException e) {
             System.err.println("Couldn't get I/O for " + "the connection to:" + args[0]);
+            e.printStackTrace();
+            System.exit(1);
+            
+        }
+        try{
+            String line;
+            while (true) {
+                System.out.println("En attente d'un message...");
+                line = stdIn.readLine();
+                System.out.println("Envoi du message...");
+                if (line.equals(".")) break;
+                socOut.println(line);
+                
+            }
+            
+            socOut.close();
+            socIn.close();
+            stdIn.close();
+            echoSocket.close();
+        }catch(Exception e){
+            e.printStackTrace();
             System.exit(1);
         }
-
-        String line;
-        while (true) {
-            line = stdIn.readLine();
-            if (line.equals(".")) break;
-            socOut.println(line);
-            System.out.println("echo: " + socIn.readLine());
-        }
-
-        socOut.close();
-        socIn.close();
-        stdIn.close();
-        echoSocket.close();
+        
     }
 
     public static void leerRecibido(String message) {

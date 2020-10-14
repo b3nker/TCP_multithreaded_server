@@ -41,6 +41,7 @@ public class ClientThread extends Thread {
             }
         } catch (Exception e) {
             System.err.println("Error in EchoServer:" + e);
+            e.printStackTrace();
         }
     }
 

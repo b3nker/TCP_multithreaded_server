@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 
 public class ReadThread extends Thread{
+
     private Socket clientSocket;
     private BufferedReader socIn = null;
 
@@ -21,14 +22,20 @@ public class ReadThread extends Thread{
     public void run() {
         try {
             while (true) {
+                System.out.println("En attente d'un message venant des participants...");
                 String line = socIn.readLine();
                 if (!line.isEmpty()) {
-                    System.out.println("Mensaje recibido");
+                    System.out.println("Message recu...");
                     EchoClient.leerRecibido(line);
                 }
             }
         } catch (Exception e) {
             System.err.println("Error in EchoServer:" + e);
+            e.printStackTrace();
         }
+    }
+
+    public BufferedReader getSocIn(){
+        return this.socIn;
     }
 }
