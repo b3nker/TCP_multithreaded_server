@@ -13,8 +13,7 @@ import java.net.*;
 /**Corresponds to a server connection
  *
  */
-public class ClientThread
-        extends Thread {
+public class ClientThread extends Thread {
 
     private Socket clientSocket;
     private String pseudo;
@@ -30,13 +29,13 @@ public class ClientThread
     public void run() {
         try {
             BufferedReader socIn = null;
-            socIn = new BufferedReader(
-                    new InputStreamReader(clientSocket.getInputStream()));
+            socIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             PrintStream socOut = new PrintStream(clientSocket.getOutputStream());
+
             while (true) {
                 String line = socIn.readLine();
                 socOut.println(line);
-                if(!line.isEmpty()){
+                if (!line.isEmpty()) {
                     EchoServerMultiThreaded.sendMessageToAll(line, this.pseudo);
                 }
             }

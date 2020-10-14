@@ -21,6 +21,7 @@ public class EchoServerMultiThreaded  {
      **/
     public static Map<String,PrintWriter> outputServiceClientSockets = new HashMap<>();
     public static int nbClient = 0;
+
     public static void main(String args[]){
         ServerSocket listenSocket;
 
@@ -51,7 +52,7 @@ public class EchoServerMultiThreaded  {
      *
      * @param message
      */
-    synchronized public static void sendMessageToAll(String message, String pseudo){
+    synchronized public static void sendMessageToAll(String message, String pseudo) {
 
         for (String key: outputServiceClientSockets.keySet()) {
             PrintWriter out = outputServiceClientSockets.get(key);
