@@ -59,7 +59,7 @@ public class EchoClient {
         echoSocket.close();
     }
 
-    public static void leerRecibido(String message) {
+    public static void readReceived(String message) {
         System.out.println("Recibido: " + message);
     }
 }
