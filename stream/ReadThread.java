@@ -23,7 +23,7 @@ public class ReadThread extends Thread{
             while (true) {
                 String line = socIn.readLine();
                 if (!line.isEmpty()) {
-                    System.out.println("Message received " + line);
+                    System.out.println("Message received in read thread: " + line);
                     EchoClient.readReceived(line);
                 }
             }

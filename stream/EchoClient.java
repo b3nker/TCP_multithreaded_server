@@ -60,7 +60,7 @@ public class EchoClient {
     }
 
     public static void readReceived(String message) {
-        System.out.println("Recibido: " + message);
+        System.out.println(message);
     }
 }
 

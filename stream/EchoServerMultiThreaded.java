@@ -7,10 +7,10 @@
 
 package stream;
 
-import java.io.PrintWriter;
+import java.io.PrintStream;
 import java.net.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EchoServerMultiThreaded  {
 
@@ -19,8 +19,9 @@ public class EchoServerMultiThreaded  {
      * @param EchoServer port
      *
      **/
-    public static Map<String,PrintWriter> outputServiceClientSockets = new HashMap<>();
-    public static int nbClient = 0;
+    private static List<Socket> outputServiceClientSockets = new ArrayList<Socket>();
+    private static int nbClient = 0;
+    private static List<String> messages = new ArrayList<>();
 
     public static void main(String args[]){
         ServerSocket listenSocket;
@@ -37,13 +38,14 @@ public class EchoServerMultiThreaded  {
                 System.out.println("Connexion from:" + clientSocket.getInetAddress());
                 nbClient ++;
                 ClientThread ct = new ClientThread(clientSocket,"Client " + nbClient);
-                PrintWriter socOut = new PrintWriter(clientSocket.getOutputStream());
-                EchoServerMultiThreaded.addServiceClientSocket(socOut, ct.getPseudo());
+                EchoServerMultiThreaded.addServiceClientSocket(clientSocket);
 
                 ct.start();
             }
         } catch (Exception e) {
             System.err.println("Error in EchoServer:" + e);
+            e.printStackTrace();
+
         }
     }
 
@@ -53,11 +55,16 @@ public class EchoServerMultiThreaded  {
      * @param message
      */
     synchronized public static void sendMessageToAll(String message, String pseudo) {
-
-        for (String key: outputServiceClientSockets.keySet()) {
-            PrintWriter out = outputServiceClientSockets.get(key);
-            out.print(pseudo + " said : " + message);
-            System.out.println(pseudo + " said : " + message);
+        for (Socket s: outputServiceClientSockets) {
+            try {
+                PrintStream out = new PrintStream(s.getOutputStream());
+                out.println(pseudo + " said : " + message);
+                System.out.println("Output : " + out);
+                System.out.println(pseudo + " said : " + message);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            ;
         }
     }
 
@@ -65,8 +72,8 @@ public class EchoServerMultiThreaded  {
      *
      * @param out, service client thread output stream
      */
-    synchronized public static void addServiceClientSocket(PrintWriter out, String pseudo){
-        outputServiceClientSockets.put(pseudo, out);
+    synchronized public static void addServiceClientSocket(Socket s){
+        outputServiceClientSockets.add(s);
     }
 }
 

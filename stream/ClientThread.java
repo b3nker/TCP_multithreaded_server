@@ -43,10 +43,6 @@ public class ClientThread extends Thread {
             System.err.println("Error in EchoServer:" + e);
         }
     }
-
-    public String getPseudo() {
-        return pseudo;
-    }
 }
 
 
