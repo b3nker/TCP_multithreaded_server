@@ -30,7 +30,7 @@ public class EchoServerMultiThreaded  {
             System.out.println("Usage: java EchoServer <EchoServer port>");
             System.exit(1);
         }
-        
+
         getStoredMessages();
         try {
             listenSocket = new ServerSocket(Integer.parseInt(args[0])); //port
