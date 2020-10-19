@@ -57,22 +57,20 @@ public class EchoServerMultiThreaded  {
      *
      * @param message
      */
-    synchronized public static void sendMessageToAll(String message, String pseudo) {
+    synchronized public static void sendMessageToAll(String message) {
         messages.add(message);
         storeMessage(message);
         for (Socket s: outputServiceClientSockets) {
             try {
                 PrintStream out = new PrintStream(s.getOutputStream());
                 out.println(message);
-                System.out.println(message);
             } catch(Exception e){
                 e.printStackTrace();
             }
         }
-        System.out.println("messages has size: " + messages.size());
     }
 
-    synchronized private static void recoverMessages(Socket s) {
+     private synchronized static void recoverMessages(Socket s) {
         for (String message: messages) {
             PrintStream out = null;
             try {
@@ -84,7 +82,7 @@ public class EchoServerMultiThreaded  {
         }
     }
 
-    private static void getStoredMessages() {
+    private synchronized static void getStoredMessages() {
         try (BufferedReader br = new BufferedReader(new FileReader(".storage"))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -96,7 +94,7 @@ public class EchoServerMultiThreaded  {
         }
     }
 
-    private static void storeMessage(String message) {
+    private synchronized static void storeMessage(String message) {
         FileWriter fw;
         try {
             fw = new FileWriter(".storage", true);

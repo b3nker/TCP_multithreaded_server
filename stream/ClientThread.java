@@ -18,7 +18,7 @@ public class ClientThread extends Thread {
     private Socket clientSocket;
     private String pseudo;
 
-    ClientThread(Socket s, String pseudo) {
+    public ClientThread(Socket s, String pseudo) {
         this.clientSocket = s;
         this.pseudo = pseudo;
     }
@@ -30,13 +30,11 @@ public class ClientThread extends Thread {
         try {
             BufferedReader socIn = null;
             socIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            PrintStream socOut = new PrintStream(clientSocket.getOutputStream());
 
             while (true) {
                 String line = socIn.readLine();
-                socOut.println(line);
                 if (!line.isEmpty()) {
-                    EchoServerMultiThreaded.sendMessageToAll(pseudo + " said : " + line, pseudo);
+                    EchoServerMultiThreaded.sendMessageToAll(pseudo + " said : " + line);
                 }
             }
         } catch (Exception e) {

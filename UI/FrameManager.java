@@ -1,11 +1,13 @@
 package UI;
 
 import stream.EchoClient;
+import stream.ReadThread;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.net.Socket;
 
 public class FrameManager extends JFrame {
 
@@ -15,6 +17,9 @@ public class FrameManager extends JFrame {
     public FrameManager(EchoClient model) {
         this.model = model;
         createChatWindow();
+        Socket socket = model.getEchoSocket();
+        ReadThread readThread = new ReadThread(socket, this);
+        readThread.start();
     }
 
     private void createChatWindow() {
@@ -72,9 +77,16 @@ public class FrameManager extends JFrame {
 
     private void sendMessage(String message) {
         if (message.length() > 0) {
+            //display.append(message + "\n");
+            display.setCaretPosition(display.getDocument().getLength());
+            model.sendMessage(message);
+        }
+    }
+
+    public void readReceived(String message) {
+        if (message.length() > 0) {
             display.append(message + "\n");
             display.setCaretPosition(display.getDocument().getLength());
-            //model.sendMessage(message);
         }
     }
 

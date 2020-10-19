@@ -12,9 +12,8 @@ import java.net.*;
 
 public class EchoClient {
 
-    private static Socket echoSocket = null;
-    private static PrintStream socOut = null;
-    private static BufferedReader socIn = null;
+    private Socket echoSocket = null;
+    private PrintStream socOut = null;
 
     /**
      * main method
@@ -30,19 +29,18 @@ public class EchoClient {
         try {
             // Usage: java EchoClient <EchoServer host> <EchoServer port>
             echoSocket = new Socket("10.43.5.122", 200);
-            socIn = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
             socOut = new PrintStream(echoSocket.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void readReceived(String message) {
-        System.out.println(message);
-    }
-
     public void sendMessage(String message) {
         socOut.println(message);
+    }
+
+    public Socket getEchoSocket() {
+        return this.echoSocket;
     }
 }
 
