@@ -30,6 +30,8 @@ public class ClientThread extends Thread {
         try {
             BufferedReader socIn = null;
             socIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            PrintStream out = new PrintStream(clientSocket.getOutputStream());
+            out.println("# " + pseudo);
 
             while (true) {
                 String line = socIn.readLine();

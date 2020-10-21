@@ -1,4 +1,4 @@
-package UI;
+package views;
 
 import stream.EchoClient;
 import stream.ReadThread;
@@ -13,11 +13,14 @@ public class FrameManager extends JFrame {
 
     public EchoClient model;
     private JTextArea display;
+    private JFrame frame;
 
     public FrameManager(EchoClient model) {
         this.model = model;
         createChatWindow();
+
         Socket socket = model.getEchoSocket();
+
         ReadThread readThread = new ReadThread(socket, this);
         readThread.start();
     }
@@ -61,7 +64,7 @@ public class FrameManager extends JFrame {
         messagePanel.add(sendMessageButton);
 
         // Add panels to container and this to our frame
-        JFrame frame = new JFrame();
+        frame = new JFrame();
         container.add(middlePanel);
         container.add(messagePanel);
         frame.add(container);
@@ -88,6 +91,10 @@ public class FrameManager extends JFrame {
             display.append(message + "\n");
             display.setCaretPosition(display.getDocument().getLength());
         }
+    }
+
+    public void setClientName(String name) {
+        frame.setTitle(name);
     }
 
 }

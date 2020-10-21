@@ -60,6 +60,7 @@ public class EchoServerMultiThreaded  {
     synchronized public static void sendMessageToAll(String message) {
         messages.add(message);
         storeMessage(message);
+
         for (Socket s: outputServiceClientSockets) {
             try {
                 PrintStream out = new PrintStream(s.getOutputStream());
@@ -71,8 +72,8 @@ public class EchoServerMultiThreaded  {
     }
 
      private synchronized static void recoverMessages(Socket s) {
-        for (String message: messages) {
-            PrintStream out = null;
+         PrintStream out = null;
+         for (String message: messages) {
             try {
                 out = new PrintStream(s.getOutputStream());
                 out.println(message);

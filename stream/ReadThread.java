@@ -1,6 +1,6 @@
 package stream;
 
-import UI.FrameManager;
+import views.FrameManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,6 +27,11 @@ public class ReadThread extends Thread{
             while (true) {
                 String line = socIn.readLine();
                 if (!line.isEmpty()) {
+                    if (line.startsWith("#")) {
+                        frontEnd.setClientName(line.substring(1));
+                        continue;
+                    }
+
                     frontEnd.readReceived(line);
                 }
             }
